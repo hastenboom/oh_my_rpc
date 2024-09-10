@@ -8,7 +8,7 @@ import (
 )
 
 func TestClient(t *testing.T) {
-	conn, err := net.Dial("tcp", Common.Test_ADDR)
+	conn, err := net.Dial("tcp", Common.TEST_ADDR)
 	if err != nil {
 		return
 	}

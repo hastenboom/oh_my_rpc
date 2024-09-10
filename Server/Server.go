@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"net/http"
 	"oh_my_rpc/Protocol"
 	"reflect"
 	"strings"
@@ -34,6 +35,29 @@ func (server *RpcServer) Accept(listener net.Listener) {
 		//TODO: for debug
 		server.handleConnection(conn)
 	}
+}
+
+const (
+	connected        = "200 Connected to Gee RPC"
+	defaultRPCPath   = "/_geeprc_"
+	defaultDebugPath = "/debug/geerpc"
+)
+
+func (server *RpcServer) ServeHttp(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "CONNECT" {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		//_, _ = io.WriteString(w, "405 must CONNECT\n")
+		_, _ = w.Write([]byte("405 must CONNECT\n"))
+		return
+	}
+	conn, _, err := w.(http.Hijacker).Hijack()
+	if err != nil {
+		log.Print("rpc hijacking ", req.RemoteAddr, ": ", err.Error())
+		return
+	}
+	_, _ = io.WriteString(conn, "HTTP/1.0 "+connected+"\n\n")
+	server.handleConnection(conn)
 }
 
 func (server *RpcServer) handleConnection(conn net.Conn) {

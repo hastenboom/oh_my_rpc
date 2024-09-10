@@ -21,7 +21,7 @@ type service struct {
 	methodMap    map[string]*reflect.Method //a.k.a method map
 }
 
-func newService[T interface{}](serviceValue T) *service {
+func newService[T any](serviceValue T) *service {
 	sPtr := new(service)
 	sPtr.serviceValue = reflect.ValueOf(serviceValue)
 	//
@@ -46,10 +46,12 @@ func (s *service) registerMethods() {
 		if mType.Out(0) != reflect.TypeOf((*error)(nil)).Elem() {
 			continue
 		}
+
 		argType, replyType := mType.In(1), mType.In(2)
 		if !isExportedOrBuiltinType(argType) || !isExportedOrBuiltinType(replyType) {
 			continue
 		}
+
 		s.methodMap[method.Name] = &method
 		log.Printf("rpc Server: register %s.%s\n", s.serviceName, method.Name)
 	}

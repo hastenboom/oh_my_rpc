@@ -1,10 +1,14 @@
 package Client
 
 import (
+	"bufio"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net"
+	"net/http"
 	"oh_my_rpc/Protocol"
 	"sync"
 )
@@ -52,6 +56,27 @@ func NewClient(conn net.Conn, option *Protocol.Option) (*Client, error) {
 	}
 
 	return client, nil
+}
+
+const (
+	connected        = "200 Connected to Gee RPC"
+	defaultRPCPath   = "/_geeprc_"
+	defaultDebugPath = "/debug/geerpc"
+)
+
+func NewHttpClient(conn net.Conn, opt *Protocol.Option) (*Client, error) {
+	_, _ = io.WriteString(conn, fmt.Sprintf("CONNECT %s HTTP/1.0\n\n", defaultRPCPath))
+
+	// Require successful HTTP response
+	// before switching to RPC protocol.
+	resp, err := http.ReadResponse(bufio.NewReader(conn), &http.Request{Method: "CONNECT"})
+	if err == nil && resp.Status == connected {
+		return NewClient(conn, opt)
+	}
+	if err == nil {
+		err = errors.New("unexpected HTTP response: " + resp.Status)
+	}
+	return nil, err
 }
 
 func (client *Client) SyncCall(serviceMethod string, args any, reply any) {

@@ -19,7 +19,7 @@ func (s *Student) Foo1(a int, b *string) error {
 
 func TestServer(t *testing.T) {
 
-	listen, err := net.Listen("tcp", Common.Test_ADDR)
+	listen, err := net.Listen("tcp", Common.TEST_ADDR)
 	if err != nil {
 		return
 	}
