@@ -229,7 +229,6 @@ func (server *RpcServer) doHandleRpcRequest(codec Protocol.Codec, req *request, 
 
 	//server send the replyv as the body
 	server.sendRpcResponse(codec, req.header, req.replyv.Interface(), sendingLock)
-
 }
 
 //type request struct {

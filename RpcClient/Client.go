@@ -1,4 +1,4 @@
-package Client
+package RpcClient
 
 import (
 	"bufio"
@@ -42,7 +42,7 @@ func NewClient(conn net.Conn, option *Protocol.Option) (*Client, error) {
 	}
 
 	err = json.NewEncoder(conn).Encode(option)
-	log.Println("rpc Client: Send option: ", option)
+	log.Println("rpc RpcClient: Send option: ", option)
 	if err != nil {
 		return nil, err
 	}
@@ -66,6 +66,7 @@ const (
 
 func NewHttpClient(conn net.Conn, opt *Protocol.Option) (*Client, error) {
 	_, _ = io.WriteString(conn, fmt.Sprintf("CONNECT %s HTTP/1.0\n\n", defaultRPCPath))
+	//conn.Write([]byte("CONNECT /_geeprc_ HTTP/1.0\n\n"))
 
 	// Require successful HTTP response
 	// before switching to RPC protocol.
