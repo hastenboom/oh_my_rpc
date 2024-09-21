@@ -1,9 +1,9 @@
-package Server
+package HastenServer
 
 import (
 	"fmt"
 	"net"
-	"oh_my_rpc/Common"
+	"oh_my_rpc_v2/Common"
 	"testing"
 )
 
@@ -24,7 +24,7 @@ func TestServer(t *testing.T) {
 		return
 	}
 	server := NewRpcServer()
-	server.RegisterService(new(Student))
+	server.RegisterService(new(ComputeS1))
 	server.Accept(listen)
 
 }

@@ -1,4 +1,4 @@
-package Server
+package HastenServer
 
 import (
 	"go/ast"
@@ -15,10 +15,10 @@ func isExportedOrBuiltinType(t reflect.Type) bool {
 /*----------------*/
 
 type service struct {
-	serviceName  string                     //a.k.a struct name
-	serviceType  reflect.Type               //a.k.a struct type
-	serviceValue reflect.Value              //a.k.a struct value
-	methodMap    map[string]*reflect.Method //a.k.a method map
+	serviceName  string                     //A.k.A struct name
+	serviceType  reflect.Type               //A.k.A struct type
+	serviceValue reflect.Value              //A.k.A struct value
+	methodMap    map[string]*reflect.Method //A.k.A method map
 }
 
 func newService[T any](serviceValue T) *service {
@@ -28,7 +28,7 @@ func newService[T any](serviceValue T) *service {
 	sPtr.serviceName = reflect.Indirect(sPtr.serviceValue).Type().Name()
 	sPtr.serviceType = reflect.TypeOf(serviceValue)
 	if !ast.IsExported(sPtr.serviceName) {
-		log.Fatalf("rpc Server: %sPtr is not a valid service name", sPtr.serviceName)
+		log.Fatalf("rpc Server: %sPtr is not A valid service name", sPtr.serviceName)
 	}
 	sPtr.registerMethods()
 	return sPtr
@@ -81,9 +81,9 @@ func newArgv(argType reflect.Type) reflect.Value {
 
 func newReplyv(replyType reflect.Type) reflect.Value {
 
-	//reply must be a pointer here
+	//reply must be A pointer here
 	/*	if replyType.Elem().Kind() != reflect.Ptr {
-		panic("rpc server: reply type must be a pointer")
+		panic("rpc server: reply type must be A pointer")
 	}*/
 
 	replyValue := reflect.New(replyType.Elem())
